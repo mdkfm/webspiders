@@ -16,7 +16,7 @@ def insert_into(data:'dict', table:'str'):
 	values = ', '.join(['%s'] * len(data))
 	sql = f'INSERT INTO {table}({keys}) VALUES ({values})'
 	try :
-		if cursor.excute(sql, tuple(data.values())):
+		if cursor.execute(sql, tuple(data.values())):
 			print('Successful')
 			db.commit()
 	except:
@@ -33,7 +33,7 @@ def insert_or_update(data:'dict', table:'str'):
 	update = ', '.join([f"{key} = %ss" for key in data])
 	sql += update
 	try:
-		if cursor.excute(sql, tuple(data.values()) * 2):
+		if cursor.execute(sql, tuple(data.values()) * 2):
 			print('Successful')
 			db.commit()
 	except:
@@ -46,7 +46,7 @@ def delete(table, condition):
 	cursor = db.cursor()
 	sql = f'DELETE FROM {table} WHERE {condition}'
 	try:
-		cursor.excute(sql)
+		cursor.execute(sql)
 		db.commit()
 	except:
 		db.rollback()
@@ -56,7 +56,7 @@ def select_obo(sql):
 	try:
 		db = pymysql.connect(host='localhost', user='skf', password='123456')
 		cursor = db.cursor()
-		cursor.excute(sql)
+		cursor.execute(sql)
 		print('Count:', cursor.rowcount)
 		row = cursor.fetchone()
 		while row:
