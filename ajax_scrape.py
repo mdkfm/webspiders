@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO,
 INDEX_URL = 'https://spa1.scrape.center/api/movie/?limit={limit}&offset={offset}'
 DETAIL_URL = 'https://spa1.scrape.center/api/movie/{id}'
 LIMIT = 10
-TOTAL_PAGE = 1
+TOTAL_PAGE = 10
 RESULTS_DIR = 'results'
 exists(RESULTS_DIR) or makedirs(RESULTS_DIR)
 
@@ -39,7 +39,7 @@ def scrape_detail(id):
 def create_table():
 	db = pymysql.connect(host='localhost', user='skf', password='123456')
 	cursor = db.cursor()
-	sql = 'CREATE TABLE IF NOT EXISTS spiders.spa1 (name VARCHAR(100), drama VARCHAR(500))'
+	sql = 'CREATE TABLE IF NOT EXISTS spiders.spa1 (name VARCHAR(100) PRIMARY KEY, drama TEXT)'
 	try :
 		if cursor.execute(sql):
 			logging.info('Create table successfuly')
@@ -53,14 +53,16 @@ def save_data(data):
 	cursor = db.cursor()
 	name = data.get('name')
 	drama = data.get('drama')
-	sql = f'INSERT INTO spiders.spa1 VALUES ({name}, {drama})'
-	try :
+	logging.info('detail data %s: %s', name, drama)
+	sql = f'INSERT INTO spiders.spa1 VALUES (\'{name}\', \'{drama}\') \
+		ON DUPLICATE KEY UPDATE name=\'{name}\', drama=\'{drama}\''
+	try:
 		if cursor.execute(sql):
 			db.commit()
 			logging.info('data saved successfully')
 	except:
-		logging.info('failed')
 		db.rollback()
+		logging.info('save failed')
 	db.close()
 
 def main_scrape(page):
@@ -68,7 +70,6 @@ def main_scrape(page):
 	for item in index_data.get('results'):
 		id = item.get('id')
 		detail_data = scrape_detail(id)
-		logging.info('detail data %s', detail_data)
 		save_data(detail_data)
 		
 def main():
