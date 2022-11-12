@@ -1,7 +1,6 @@
 import requests
 import pymysql
 import logging
-import json
 from os import makedirs
 from os.path import exists
 import multiprocessing
@@ -12,7 +11,7 @@ logging.basicConfig(level=logging.INFO,
 INDEX_URL = 'https://spa1.scrape.center/api/movie/?limit={limit}&offset={offset}'
 DETAIL_URL = 'https://spa1.scrape.center/api/movie/{id}'
 LIMIT = 10
-TOTAL_PAGE = 10
+TOTAL_PAGE = 1
 RESULTS_DIR = 'results'
 exists(RESULTS_DIR) or makedirs(RESULTS_DIR)
 
