@@ -1,8 +1,6 @@
 import requests
 import pymysql
 import logging
-from os import makedirs
-from os.path import exists
 import multiprocessing
 
 logging.basicConfig(level=logging.INFO,
