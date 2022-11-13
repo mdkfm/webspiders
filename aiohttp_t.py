@@ -2,6 +2,11 @@ import asyncio
 import aiohttp
 import time
 
+CONCURRENCY = 8
+URL = 'https://baidu.com'
+
+semaphore = asyncio.Semaphore(CONCURRENCY)
+
 async def get(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -21,14 +26,15 @@ async def post_1(url, data:'dict'):
             print(await response.text())
 
 async def request():
-    url = 'https://baidu.com'
-    print('Waiting for', url)
-    response = await get(url)
-    print('Get response from', url, 'response')
+    async with semaphore:
+        url = 'https://baidu.com'
+        print('Waiting for', url)
+        response = await get(url)
+        print('Get response from', url, 'response')
 
 async def main():
 	start = time.time()
-	tasks = [request() for _ in range(10)]
+	tasks = [request() for _ in range(1000)]
 	await asyncio.gather(*tasks)
 	end = time.time()
 	print('Cost time:', end - start)
