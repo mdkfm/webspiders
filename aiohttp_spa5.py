@@ -25,8 +25,7 @@ async def scrape_api(url):
                 logging.error('get invalid status code %s while scraping %s',
                               response.status, url)
         except:
-            logging.error('error occurred while scraping %s', url, exc_info=True)
-
+            logging.error('error occurred while scraping %s', url, exc_info=True) 
 
 async def scrape_index(page):
     url = INDEX_URL.format(limit=LIMIT, offset=LIMIT * (page - 1))
@@ -42,16 +41,13 @@ async def save_data(data):
             name = data.get('name')
             introduction = data.get('introduction')
             logging.info('detail data %s: %s', name, introduction)
-            sql = f'INSERT INTO spiders.spa5 \
-                VALUES (\'{name}\', \'{introduction}\') \
-                ON DUPLICATE KEY UPDATE name=\'{name}\', drama=\'{introduction}\''
-            try:
-                if await cursor.execute(sql):
-                    await db.commit()
-                    logging.info('data saved successfully')
-            except:
-                await db.rollback()
-                logging.info('save failed')
+            sql = f"INSERT INTO spiders.spa5 \
+                VALUES (\"{name}\", \"{introduction}\") \
+                ON DUPLICATE KEY UPDATE name=\"{name}\", introduction=\"{introduction}\""
+            print(sql)
+            await cursor.execute(sql)
+            await db.commit()
+            logging.info('data saved successfully')
 
 async def main_scrape(page):
     async with semaphore:
