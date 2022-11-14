@@ -1,6 +1,5 @@
 import asyncio
 import aiohttp
-import pymysql
 import aiomysql
 import logging
 
@@ -13,7 +12,7 @@ semaphore = asyncio.Semaphore(CONCURRENCY)
 INDEX_URL = 'https://spa5.scrape.center/api/book/?limit={limit}&offset={offset}'
 DETAIL_URL = 'https://spa5.scrape.center/api/book/{id}'
 LIMIT = 18
-TOTAL_PAGE = 1
+TOTAL_PAGE = 10
 
 async def scrape_api(url):
     logging.info('scraping %s...', url)
@@ -40,12 +39,13 @@ async def save_data(data):
         async with db.cursor() as cursor:
             name = data.get('name')
             introduction = data.get('introduction')
+            values = (name, introduction)
             logging.info('detail data %s: %s', name, introduction)
-            sql = f"INSERT INTO spiders.spa5 \
-                VALUES (\"{name}\", \"{introduction}\") \
-                ON DUPLICATE KEY UPDATE name=\"{name}\", introduction=\"{introduction}\""
-            print(sql)
-            await cursor.execute(sql)
+            sql = "INSERT INTO spiders.spa5 \
+                VALUES (%s, %s) \
+                ON DUPLICATE KEY UPDATE name=%s, introduction=%s"   
+            #建议不要直接构造完整的sql语句，否则可能因为传入的值导致sql语法错误
+            await cursor.execute(sql, values*2)
             await db.commit()
             logging.info('data saved successfully')
 
