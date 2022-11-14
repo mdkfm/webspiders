@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("mysql+aiomysql://skf:123456@localhost:3306/spiders", echo=True)
+engine = create_engine("mysql+pymysql://skf:123456@localhost:3306/spiders", echo=True)
 Session = sessionmaker(bind=engine)
 
 session = Session()
@@ -16,8 +16,8 @@ class book(Base):
 
     def __repr__(self):
         name = self.name
-        introduction = self.introdution
-        return f"Book: name: {name}, introduction: {Phone}"
+        introduction = self.introduction
+        return f"Book: name: {name}, introduction: {introduction}"
    
 
 Base.metadata.create_all(engine)
