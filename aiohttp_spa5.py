@@ -16,15 +16,16 @@ TOTAL_PAGE = 10
 
 async def scrape_api(url):
     logging.info('scraping %s...', url)
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    return await response.json()
-                logging.error('get invalid status code %s while scraping %s',
-                              response.status, url)
-        except:
-            logging.error('error occurred while scraping %s', url, exc_info=True) 
+    async with semaphore:
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    logging.error('get invalid status code %s while scraping %s',
+                                  response.status, url)
+            except:
+                logging.error('error occurred while scraping %s', url, exc_info=True) 
 
 async def scrape_index(page):
     url = INDEX_URL.format(limit=LIMIT, offset=LIMIT * (page - 1))
@@ -45,17 +46,19 @@ async def save_data(data):
                 VALUES (%s, %s) \
                 ON DUPLICATE KEY UPDATE name=%s, introduction=%s"   
             #建议不要直接构造完整的sql语句，否则可能因为传入的值导致sql语法错误
-            await cursor.execute(sql, values*2)
-            await db.commit()
-            logging.info('data saved successfully')
+            try:
+                if await cursor.execute(sql, values*2):
+                    await db.commit()
+                logging.info('data saved successfully')
+            except:
+                logging.info('save failed')
 
 async def main_scrape(page):
-    async with semaphore:
-        index_data = await scrape_index(page)
-        for item in index_data.get('results'):
-            id = item.get('id')
-            detail_data = await scrape_detail(id)
-            await save_data(detail_data)
+    index_data = await scrape_index(page)
+    for item in index_data.get('results'):
+        id = item.get('id')
+        detail_data = await scrape_detail(id)
+        await save_data(detail_data)
 
 async def main():
     tasks = [main_scrape(page) for page in range(1, TOTAL_PAGE + 1)]
