@@ -39,5 +39,4 @@ def actions_t():
 	actions.drag_and_drop(source, target)
 	actions.perform()
 
-actions_t()
 
