@@ -1,7 +1,11 @@
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
+
+import selenium.common.exceptions as Error
+
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -47,6 +51,7 @@ def get_attr():
 	logo = browser.find_element('css selector', '.logo-image')
 	print(logo)
 	print(logo.get_attribute('src'))
+	browser.close()
 
 def get_info():
 	url = 'https://spa2.scrape.center/'
@@ -57,6 +62,7 @@ def get_info():
 	print(input.location)
 	print(input.tag_name)
 	print(input.size)
+	browser.close()
 
 def switch_frame():
 	url = 'http://www.runoob.com/try/try.php?filename=jqueryui-api-droppable'
@@ -70,6 +76,7 @@ def switch_frame():
 	logo = browser.find_element('css slector', '.logo')
 	print(logo)
 	print(logo.text)
+	browser.close()
 
 def wait():
 	browser.get('https://www.taobao.com/')
@@ -77,5 +84,41 @@ def wait():
 	input = wait.until(EC.presence_of_element_located((By.ID, 'q')))
 	button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn-search')))
 	print(input, button)
+	browser.close()
 
-wait()
+def forward_and_back():
+	browser.get('https://www.baidu.com/')
+	browser.get('https://www.taobao.com/')
+	browser.get('https://www.github.com/')
+	browser.back()
+	time.sleep(1)
+	browser.forward()
+	browser.close()
+
+def get_cookie():
+	browser.get('https://www.zhihu.com/explore')
+	print(browser.get_cookies())
+	browser.add_cookie({'name': 'name', 'domain': 'www.zhihu.com', 'value': 'germey'})
+	print(browser.get_cookies())
+	browser.delete_all_cookies()
+	print(browser.get_cookies())
+	browser.close()
+
+def window_open():
+	browser.get('https://www.baidu.com')
+	browser.execute_script('window.open()')
+	print(browser.window_handles)
+	browser.switch_to.window(browser.window_handles[1])
+	browser.get('https://www.taobao.com')
+	time.sleep(1)
+	browser.switch_to.window(browser.window_handles[0])
+	browser.get('https://www.github.com')
+	browser.get('https://www.baidu.com')
+	browser.close()
+
+def error_show():
+	for error in sorted(dir(Error)):
+		if error.endswith('Exception'):
+			print(error)
+
+
