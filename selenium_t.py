@@ -130,4 +130,3 @@ def prtsc():
 	browser.set_window_size(1366, 768)
 	browser.get('https://www.baidu.com')
 	browser.get_screenshot_as_file('preview.png')
-prtsc()
