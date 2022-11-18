@@ -3,6 +3,7 @@ from selenium.webdriver import FirefoxOptions
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import FirefoxOptions
 
 import selenium.common.exceptions as Error
 
@@ -13,7 +14,7 @@ from selenium.webdriver import ActionChains
 
 import time
 
-browser = webdriver.Firefox()
+#browser = webdriver.Firefox()
 
 def find_t():
 	browser.get('https://www.taobao.com')
@@ -122,3 +123,11 @@ def error_show():
 			print(error)
 
 
+def prtsc():
+	option = FirefoxOptions()
+	option.add_argument('--headless')
+	browser = webdriver.Firefox(options=option)
+	browser.set_window_size(1366, 768)
+	browser.get('https://www.baidu.com')
+	browser.get_screenshot_as_file('preview.png')
+prtsc()
