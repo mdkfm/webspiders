@@ -42,7 +42,7 @@ def scrape_index(page):
 
 
 def parse_index():
-    elements = browser.find_elements_by_css_selector('#index .item .name')
+    elements = browser.find_elements('css selector', '#index .item .name')
     for element in elements:
         href = element.get_attribute('href')
         yield urljoin(INDEX_URL, href)
@@ -55,11 +55,11 @@ def scrape_detail(url):
 
 def parse_detail():
     url = browser.current_url
-    name = browser.find_element_by_tag_name('h2').text
-    categories = [element.text for element in browser.find_elements_by_css_selector('.categories button span')]
-    cover = browser.find_element_by_css_selector('.cover').get_attribute('src')
-    score = browser.find_element_by_class_name('score').text
-    drama = browser.find_element_by_css_selector('.drama p').text
+    name = browser.find_element('tag name', 'h2').text
+    categories = [element.text for element in browser.find_elements('css selector', '.categories button span')]
+    cover = browser.find_element('css selector', '.cover').get_attribute('src')
+    score = browser.find_element('css selector', '.score').text
+    drama = browser.find_element('css selector', '.drama p').text
     return {
         'url': url,
         'name': name,
