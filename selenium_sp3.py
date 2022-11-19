@@ -18,10 +18,10 @@ def parse_name(name_html):
 	for char in chars.items():
 		items.append({
 			'text': char.text().strip(),
-			'left': int(re.search('(\d+)px', char.attr('styles')).group(1))
+			'left': int(re.search('(\d+)px', char.attr('style')).group(1))
 			})
-		items = sotred(items, key=lambda x: x['left'], reverse=False)
-		return ''.join([item.get('text') for item in items])
+	items = sorted(items, key=lambda x: x['left'], reverse=False)
+	return ''.join([item.get('text') for item in items])
 
 browser.get('https://antispider3.scrape.center/')
 WebDriverWait(browser, 10) \
