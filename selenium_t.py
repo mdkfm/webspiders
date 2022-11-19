@@ -14,7 +14,7 @@ from selenium.webdriver import ActionChains
 
 import time
 
-#browser = webdriver.Firefox()
+browser = webdriver.Firefox()
 
 def find_t():
 	browser.get('https://www.taobao.com')
