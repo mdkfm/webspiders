@@ -13,15 +13,19 @@ options.add_argument('--headless')
 browser = webdriver.Firefox(options=options)
 
 def parse_name(name_html):
-	chars = name_html('.char')
-	items = []
-	for char in chars.items():
-		items.append({
-			'text': char.text().strip(),
-			'left': int(re.search('(\d+)px', char.attr('style')).group(1))
-			})
-	items = sorted(items, key=lambda x: x['left'], reverse=False)
-	return ''.join([item.get('text') for item in items])
+	has_whole = name_html('.whole')
+	if has_whole:
+		return name_html.text()
+	else:
+		chars = name_html('.char')
+		items = []
+		for char in chars.items():
+			items.append({
+				'text': char.text().strip(),
+				'left': int(re.search('(\d+)px', char.attr('style')).group(1))
+				})
+		items = sorted(items, key=lambda x: x['left'], reverse=False)
+		return ''.join([item.get('text') for item in items])
 
 browser.get('https://antispider3.scrape.center/')
 WebDriverWait(browser, 10) \
