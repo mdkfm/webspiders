@@ -6,6 +6,7 @@ from playwright.async_api import async_playwright
 page.click(selector, **kwargs)
 page.fill(selector, value, **kwargs)
 page.get_attribute(selector, name, **kwargs)
+page.query_selector(selector)
 '''
 
 def seletor_test(page):

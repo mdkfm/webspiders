@@ -35,10 +35,12 @@ def LWP_read(url, filename):
 	html = response.read().decode('utf-8')
 	print(html)
 
+
 from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener
 from urllib.error import URLError, HTTPError
 
-def BasicAuthHandler(url:'str', username:'str', pswd:'str')
+
+def BasicAuthHandler(url:'str', username:'str', pswd:'str'):
 	p = HTTPPasswordMgrWithDefaultRealm()
 	p.add_password(None, url, username, pswd)
 	auth_handler = HTTPBasicAuthHandler(p)
@@ -48,13 +50,15 @@ def BasicAuthHandler(url:'str', username:'str', pswd:'str')
 		result = opener.open(url, timeout=2)
 		html = result.read().decode('utf-8')
 		print(html)
-	 except HTTPError as e:
-	print(e.reason, e.code, e.headers, sep='\n')
+	except HTTPError as e:
+		print(e.reason, e.code, e.headers, sep='\n')
 	except URLError as e:
 		print(e.reason)
 
+
 from urllib.robotparser import RobotFileParser
 from urllib.request import urlopen
+
 
 def rp_set_url(robots_url, spiders):
 	rp = RobotFileParser()
@@ -72,8 +76,10 @@ def rp_parse(robots_url, spiders):
 	for spider, url in spiders.items():
 		print(rp.can_fetch(spiders, url))
 
+
 from urllib.request import ProxyHandler, build_opener
 from urllib.error import URLError
+
 
 def proxy_test():
 	url = 'https://www.baidu.com'
